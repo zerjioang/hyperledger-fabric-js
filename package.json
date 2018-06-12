@@ -39,6 +39,7 @@
     "yargs": "^10.0.3"
   },
   "dependencies": {
-    "js-logger": "^1.4.1"
+    "js-logger": "^1.4.1",
+    "protobufjs": "~6.8.6"
   }
 }
