@@ -41,5 +41,6 @@
   "dependencies": {
     "js-logger": "^1.4.1",
     "protobufjs": "~6.8.6"
-  }
+  },
+  "eslintIgnore": ["src/gen/vendor.js"]
 }

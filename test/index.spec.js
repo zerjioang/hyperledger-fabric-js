@@ -1,7 +1,7 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import {Bridge} from '../lib/hyperledger-fabric-js-bridge.js';
+import {Bridge} from '../lib/hlf-bridge.js';
 
 chai.expect();
 

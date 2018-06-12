@@ -175,5 +175,14 @@
     "wrap-iife": [2, "any"],
     "wrap-regex": 0,
     "yoda": [2, "never"]
-  }
+  },
+  "overrides": [
+    {
+      "files": [ "lib/*.js", "src/gen/*.js" ],
+      "excludedFiles": "vendor.js",
+      "rules": {
+        "quotes": [ 2, "single" ]
+      }
+    }
+  ]
 }
