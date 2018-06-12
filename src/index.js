@@ -1,2 +1,7 @@
 import Bridge from './bridge.js';
-export { Bridge };
+import Logging from './logger.js';
+
+export {
+  Bridge,
+  Logging
+};
