@@ -1,3 +1,4 @@
 # ignore files that are automatically generated from protobuf conversion
 
 src/gen/*.js
+src/sdk/**/*.js

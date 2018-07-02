@@ -19,6 +19,7 @@ if (env === 'build') {
 
 const config = {
   entry: __dirname + '/src/index.js',
+  // Enable sourcemaps for debugging webpack's output.
   devtool: 'source-map',
   output: {
     path: __dirname + '/lib',
@@ -28,6 +29,12 @@ const config = {
     umdNamedDefine: true
   },
   module: {
+    loaders: [
+        // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+        { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+        { test: /\.js$/, loader: "source-map-loader" }
+    ],
     rules: [
       {
         test: /(\.jsx|\.js)$/,
@@ -43,7 +50,11 @@ const config = {
   },
   resolve: {
     modules: [path.resolve('./node_modules'), path.resolve('./src')],
-    extensions: ['.json', '.js']
+    extensions: ['.json', '.js', ".webpack.js", ".web.js", ".ts", ".tsx"],
+    alias: {
+      'fs': 'memfs',
+      'fs-extra': 'memfs'
+    }
   },
   plugins: plugins
 };

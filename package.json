@@ -2,7 +2,7 @@
   "name": "hlf-bridge",
   "version": "1.0.0",
   "description": "hyperledger fabric js bridge",
-  "main": "lib/library.js",
+  "main": "lib/hlf-bridge.js",
   "scripts": {
     "build": "webpack --env dev && webpack --env build && npm run test",
     "dev": "webpack --progress --colors --watch --env dev",
@@ -23,6 +23,7 @@
   "bugs": {
     "url": "https://github.com/zerjioang/hyperledger-fabric-js/issues"
   },
+  "types": "./sdk/fabric-ca-client/types/index.d.ts",
   "homepage": "https://github.com/zerjioang/hyperledger-fabric-js",
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -35,12 +36,46 @@
     "eslint": "^4.13.1",
     "eslint-loader": "^1.9.0",
     "mocha": "^4.0.1",
+    "typescript": "^2.9.2",
     "webpack": "^3.10.0",
     "yargs": "^10.0.3"
   },
   "dependencies": {
+    "@types/bytebuffer": "^5.0.37",
+    "ByteBuffer": "^0.2.6",
+    "awesome-typescript-loader": "^5.2.0",
+    "bn.js": "^4.11.3",
+    "bytebuffer": "^5.0.1",
+    "child_process": "^1.0.2",
+    "crypto": "^1.0.1",
+    "elliptic": "^6.2.3",
+    "file-system": "^2.2.2",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^6.0.1",
+    "fs-js": "^1.0.6",
+    "grpc": "^1.12.4",
+    "grpc-web-client": "^0.6.2",
+    "ignore-walk": "^3.0.1",
     "js-logger": "^1.4.1",
-    "protobufjs": "~6.8.6"
+    "js-sha3": "^0.5.1",
+    "jsrsasign": "^7.2.2",
+    "jssha": "^2.1.0",
+    "long": "^4.0.0",
+    "memfs": "^2.9.1",
+    "nconf": "^0.8.4",
+    "os": "^0.1.1",
+    "promise-settle": "^0.3.0",
+    "protobufjs": "~6.8.6",
+    "sjcl": "^1.0.7",
+    "source-map-loader": "^0.2.3",
+    "spawn-sync": "^2.0.0",
+    "store": "^2.0.12",
+    "stream-buffers": "^3.0.2",
+    "tar-stream": "^1.6.1",
+    "url": "^0.11.0",
+    "util": "^0.10.3"
   },
-  "eslintIgnore": ["src/gen/vendor.js"]
+  "eslintIgnore": [
+    "src/gen/vendor.js"
+  ]
 }
