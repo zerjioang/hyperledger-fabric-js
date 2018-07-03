@@ -28,5 +28,46 @@
  * @typedef {Object} KeyOpts
  * @property {boolean} ephemeral Whether the key should be persisted. "true" to persist.
  */
+let api = require('./lib/client/api.js');
+let BaseClient = require('./lib/client/BaseClient.js');
+let BlockDecoder = require('./lib/client/BlockDecoder.js');
+let CertificateAuthority = require('./lib/client/CertificateAuthority.js');
+let ChannelEventHub = require('./lib/client/ChannelEventHub.js');
+let Channel = require('./lib/client/Channel.js');
+let Client = require('./lib/client/Client.js');
+let Config = require('./lib/client/Config.js');
+let Constants = require('./lib/client/Constants.js');
+let EventHub = require('./lib/client/EventHub.js');
+let hash = require('./lib/client/hash.js');
+let Orderer = require('./lib/client/Orderer.js');
+let Organization = require('./lib/client/Organization.js');
+let Packager = require('./lib/client/Packager.js');
+let Peer = require('./lib/client/Peer.js');
+let Policy = require('./lib/client/Policy.js');
+let Remote = require('./lib/client/Remote.js');
+let TransactionID = require('./lib/client/TransactionID.js');
+let User = require('./lib/client/User.js');
+let utils = require('./lib/client/utils.js');
 
-module.exports = require('./lib/client/Client.js');
+module.exports = {
+	api,
+	BaseClient,
+	BlockDecoder,
+	CertificateAuthority,
+	ChannelEventHub,
+	Channel,
+	Client,
+	Config,
+	Constants,
+	EventHub,
+	hash,
+	Orderer,
+	Organization,
+	Packager,
+	Peer,
+	Policy,
+	Remote,
+	TransactionID,
+	User,
+	utils
+}

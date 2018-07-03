@@ -1,21 +1,22 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import {Bridge} from '../lib/hlf-bridge.js';
+import {Bridge} from '../lib/hlf.js';
 
 chai.expect();
 
 const expect = chai.expect;
 
-let lib;
+let b;
 
 describe('Given an instance of the Hyperledger library', () => {
   before(() => {
-    lib = new Bridge();
+    b = new Bridge();
+    console.log(b);
   });
   describe('when I need the name', () => {
     it('should return the name', () => {
-      expect(lib.name).to.be.equal('Bridge');
+      expect(b.name).to.be.equal('Bridge');
     });
   });
 });

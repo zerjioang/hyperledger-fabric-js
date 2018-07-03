@@ -1,7 +1,7 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import {Bridge, fabric} from '../lib/hlf-bridge.js';
+import {Bridge, fabric} from '../lib/hlf.min.js';
 
 chai.expect();
 
@@ -11,7 +11,6 @@ let confidentiality;
 
 describe('Fetching ENUM ConfidentialityLevel in js from .proto files', () => {
   before(() => {
-  	console.log(fabric);
     confidentiality = fabric.protos.ConfidentialityLevel;
   });
   describe('when i want to read PUBLIC confidentiality value', () => {
@@ -19,7 +18,7 @@ describe('Fetching ENUM ConfidentialityLevel in js from .proto files', () => {
     	console.log(confidentiality);
       expect(confidentiality.PUBLIC).to.be.equal(0);
     });
-    it('should return value 0', () => {
+    it('should return value 1', () => {
     	console.log(confidentiality);
       expect(confidentiality.CONFIDENTIAL).to.be.equal(1);
     });

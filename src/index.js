@@ -1,5 +1,5 @@
 import Bridge from './bridge.js';
-import Logging from './logger.js';
+import Log from './logger.js';
 
 // import hyperledger fabric specific protocol files
 var fabric = require('./gen/vendor.js');
@@ -22,18 +22,9 @@ import hyperledger ca client specific files
 */
 var client = require('./sdk/client.index.js');
 
-exports = {
-  Bridge,
-  Logging,
-  fabric,
-  protobuf,
-  ca,
-  client
-};
-
 module.exports = {
   Bridge,
-  Logging,
+  Log,
   fabric,
   protobuf,
   ca,

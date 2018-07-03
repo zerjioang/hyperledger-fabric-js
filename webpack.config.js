@@ -59,7 +59,9 @@ const config = {
     extensions: ['.json', '.js', ".webpack.js", ".web.js", ".ts", ".tsx"],
     alias: {
       'fs': 'memfs',
-      'fs-extra': 'memfs'
+      'fs-extra': 'memfs',
+      'node_modules': path.join(__dirname, 'node_modules'),
+      'bower_modules': path.join(__dirname, 'bower_modules')
     }
   },
   plugins: plugins

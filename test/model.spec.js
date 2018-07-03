@@ -1,7 +1,7 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import {Bridge, fabric} from '../lib/hlf-bridge.js';
+import {Bridge, fabric} from '../lib/hlf.min.js';
 
 chai.expect();
 
@@ -11,7 +11,6 @@ let chaincodeID;
 
 describe('Fetching MODEL ChaincodeID in js from .proto files', () => {
   before(() => {
-  	console.log(fabric);
     chaincodeID = fabric.protos.ChaincodeID.create();
   });
   describe('when i want to create a chaincodeID model object', () => {

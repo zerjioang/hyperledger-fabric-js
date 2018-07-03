@@ -20,4 +20,15 @@
  * renew and revoke, so that the application can use the properly signed certificates to
  * authenticate with the fabric
  */
-module.exports = require('./lib/ca/FabricCAClientImpl.js');
+
+let AffiliationService = require('./lib/ca/AffiliationService.js');
+let FabricCAClientImpl = require('./lib/ca/FabricCAClientImpl.js');
+let helper = require('./lib/ca/helper.js');
+let IdentityService = require('./lib/ca/IdentityService.js');
+
+module.exports = {
+	AffiliationService,
+	FabricCAClientImpl,
+	helper,
+	IdentityService
+}
