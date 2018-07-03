@@ -2,7 +2,7 @@
   "name": "hlf",
   "version": "1.0.0",
   "description": "hyperledger fabric js bridge",
-  "main": "lib/hlf.min.js",
+  "main": "dist/hlf.min.js",
   "module": "src/index.js",
   "scripts": {
     "build": "webpack --env dev && webpack --env build && npm run test",
