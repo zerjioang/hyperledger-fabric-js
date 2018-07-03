@@ -22,13 +22,13 @@
  */
 
 let AffiliationService = require('./lib/ca/AffiliationService.js');
-let FabricCAClientImpl = require('./lib/ca/FabricCAClientImpl.js');
+let CA = require('./lib/ca/FabricCAClientImpl.js');
 let helper = require('./lib/ca/helper.js');
 let IdentityService = require('./lib/ca/IdentityService.js');
 
 module.exports = {
 	AffiliationService,
-	FabricCAClientImpl,
+	CA,
 	helper,
 	IdentityService
 }

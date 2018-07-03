@@ -31,17 +31,17 @@
 			hlf.client.BaseClient.newDefaultKeyValueStore({ path: ''}).then((state_store) => {
 			    // assign the store to the fabric client
 			    clientInstance.setStateStore(state_store);
-			    var crypto_suite = hlf.client.newCryptoSuite();
+			    var crypto_suite = hlf.client.BaseClient.newCryptoSuite();
 			    // use the same location for the state store (where the users' certificate are kept)
 			    // and the crypto store (where the users' keys are kept)
-			    var crypto_store = hlf.client.newCryptoKeyStore({path: store_path});
+			    var crypto_store = hlf.client.BaseClient.newCryptoKeyStore();
 			    crypto_suite.setCryptoKeyStore(crypto_store);
 			    clientInstance.setCryptoSuite(crypto_suite);
 			    var tlsOptions = {
 			      trustedRoots: [],
 			      verify: false
 			    };
-			    fabric_ca_client = new Fabric_CA_Client('http://172.17.0.2:7054', null , '', crypto_suite);
+			    fabric_ca_client = new hlf.ca.CA('http://172.17.0.2:7054', null , '', crypto_suite);
 			    //fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', tlsOptions , 'ca.example.com', crypto_suite);
 
 			    // first check to see if the admin is already enrolled
