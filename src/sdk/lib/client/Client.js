@@ -1353,7 +1353,12 @@ var Client = class extends BaseClient {
 		return new Promise(function(resolve, reject) {
 			if (self._userContext && self._userContext._name && self._stateStore) {
 				logger.debug('saveUserToStateStore, begin promise stateStore.setValue');
-				self._stateStore.setValue(self._userContext._name, self._userContext.toString())
+				if (global.isJsLibraryMode) {
+					self._stateStore.set(self._userContext._name, self._userContext.toString());
+					logger.debug('saveUserToStateStore, store.setValue, result = ' + self._userContext.toString());
+					resolve(self._userContext);
+				} else {
+					self._stateStore.setValue(self._userContext._name, self._userContext.toString())
 					.then(
 						function(result) {
 							logger.debug('saveUserToStateStore, store.setValue, result = ' + result);
@@ -1369,6 +1374,7 @@ var Client = class extends BaseClient {
 							reject(new Error(err));
 						}
 					);
+				}
 			} else {
 				if (!self._userContext) {
 					logger.debug('saveUserToStateStore Promise rejected, Cannot save user to state store when userContext is null.');
@@ -1570,8 +1576,8 @@ var Client = class extends BaseClient {
 					return resolve(null);
 				}
 			} else {
-				self._stateStore.getValue(name)
-				.then((memberStr) => {
+				if(global.isJsLibraryMode){
+					let memberStr = self._stateStore.get(name);
 					if (memberStr) {
 						// The member was found in the key value store, so restore the state.
 						const newUser = new User(name);
@@ -1585,18 +1591,35 @@ var Client = class extends BaseClient {
 						logger.debug('Failed to find "%s" in local key value store', name);
 						return resolve(null);
 					}
-				}).then((data) => {
-					if (data) {
-						logger.debug('Successfully loaded user "%s" from local key value store', name);
-						return resolve(data);
-					} else {
-						logger.debug('Failed to load user "%s" from local key value store', name);
-						return resolve(null);
-					}
-				}).catch((err) => {
-					logger.error('Failed to load user "%s" from local key value store. Error: %s', name, err.stack ? err.stack : err);
-					reject(err);
-				});
+				} else {
+					self._stateStore.getValue(name)
+					.then((memberStr) => {
+						if (memberStr) {
+							// The member was found in the key value store, so restore the state.
+							const newUser = new User(name);
+							if (!self.getCryptoSuite()) {
+								logger.debug('loadUserFromStateStore, cryptoSuite is not set, will load using defaults');
+							}
+							newUser.setCryptoSuite(self.getCryptoSuite());
+
+							return newUser.fromString(memberStr, true);
+						} else {
+							logger.debug('Failed to find "%s" in local key value store', name);
+							return resolve(null);
+						}
+					}).then((data) => {
+						if (data) {
+							logger.debug('Successfully loaded user "%s" from local key value store', name);
+							return resolve(data);
+						} else {
+							logger.debug('Failed to load user "%s" from local key value store', name);
+							return resolve(null);
+						}
+					}).catch((err) => {
+						logger.error('Failed to load user "%s" from local key value store. Error: %s', name, err.stack ? err.stack : err);
+						reject(err);
+					});
+				}
 			}
 		});
 	}
