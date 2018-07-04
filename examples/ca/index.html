@@ -41,7 +41,7 @@
 			      trustedRoots: [],
 			      verify: false
 			    };
-			    fabric_ca_client = new hlf.ca.CA('http://172.17.0.2:7054', null , '', crypto_suite);
+			    fabric_ca_client = new hlf.ca.CA('http://localhost:7054', null , '', crypto_suite);
 			    //fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', tlsOptions , 'ca.example.com', crypto_suite);
 
 			    // first check to see if the admin is already enrolled
