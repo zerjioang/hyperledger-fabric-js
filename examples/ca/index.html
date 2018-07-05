@@ -12,20 +12,30 @@
 </head>
 	<script type="text/javascript" src="./hlf.js"></script>
 	<script type="text/javascript">
+
+		const networkConfig = getNetworkConfiguration();
+
 		window.onload = function(e){ 
 			console.log("starting...");
 
 			var logger = new hlf.Log();
 			console.log(logger);
 			logger.debug("this is a debug test");
-						//
+
+			//build new fabric client
 			var clientInstance = new hlf.client.Client();
+			//configure its network
+			clientInstance.loadFromConfig(networkConfig);
+			//init crypto material
+			clientInstance.initCredentialStores();
+
 			var fabric_ca_client = null;
 			var admin_user = null;
 			var member_user = null;
 
 			const memoryStorage = {};
 			console.log('store path: in-memory');
+
 
 			// create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
 			hlf.client.BaseClient.newDefaultKeyValueStore({ path: ''}).then((state_store) => {
@@ -50,6 +60,7 @@
 			    if (user_from_store && user_from_store.isEnrolled()) {
 			        console.log('Successfully loaded admin from persistence');
 			        admin_user = user_from_store;
+			        console.log(admin_user);
 			        return null;
 			    } else {
 			        // need to enroll it with CA server
@@ -58,14 +69,16 @@
 			          enrollmentSecret: 'adminpw'
 			        }).then((enrollment) => {
 			          console.log('Successfully enrolled admin user "admin"');
-			          return clientInstance.createUser(
-			              {
-			                  username: 'admin',
-			                  mspid: 'AdminMSP',
+			          console.log('Creating user "example"');	
+			          return clientInstance.createUser({
+			                  username: 'example',
+			                  mspid: 'ExampleMSP',
 			                  cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
 			              });
 			        }).then((user) => {
+			          console.log('Changing current context to "example" user');
 			          admin_user = user;
+			          console.log(admin_user);
 			          return clientInstance.setUserContext(admin_user);
 			        }).catch((err) => {
 			          console.error('Failed to enroll and persist admin. Error: ' + err.stack ? err.stack : err);
@@ -77,6 +90,130 @@
 			}).catch((err) => {
 			    console.error('Failed to enroll admin: ' + err);
 			});
+		}
+
+		function getNetworkConfiguration() {
+			return {
+			  "name": "global-trade-network",
+			  "x-type": "hlfv1",
+			  "description": "The network to be in if you want to stay in the global trade business",
+			  "version": "1.0.0",
+			  "client": {
+			    "organization": "Org1",
+			    "credentialStore": {
+			      "path": "/tmp/hfc-kvs",
+			      "cryptoStore": {
+			        "path": "/tmp/hfc-cvs"
+			      },
+			      "wallet": "wallet-name"
+			    }
+			  },
+			  "channels": {
+			    "mychannel": {
+			      "orderers": [
+			        "orderer.example.com"
+			      ],
+			      "peers": {
+			        "peer0.org1.example.com": {
+			          "endorsingPeer": true,
+			          "chaincodeQuery": true,
+			          "ledgerQuery": true,
+			          "eventSource": true
+			        },
+			        "peer0.org2.example.com": {
+			          "endorsingPeer": true,
+			          "chaincodeQuery": false,
+			          "ledgerQuery": true,
+			          "eventSource": false
+			        }
+			      },
+			      "chaincodes": [
+			        "example02:v1"
+			      ]
+			    }
+			  },
+			  "organizations": {
+			    "Org1": {
+			      "mspid": "Org1MSP",
+			      "peers": [
+			        "peer0.org1.example.com",
+			        "peer1.org1.example.com"
+			      ],
+			      "certificateAuthorities": [
+			        "ca-org1"
+			      ],
+			      "adminPrivateKey": {
+			        "pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQghnA7rdgbZi/wndusiXjyf0KgE6OKZjQ+5INjwelRAC6hRANCAASb3u+hY+U/FZvhYDN6d08HJ1v56UJUyz/n2NHyJgTg6kC05AaJMeGIinEF0JeJtRDNVQGzoQJQYjnzUTS9FvGh\n-----END PRIVATE KEY-----"
+			      },
+			      "signedCert": {
+			      	"pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQghnA7rdgbZi/wndusiXjyf0KgE6OKZjQ+5INjwelRAC6hRANCAASb3u+hY+U/FZvhYDN6d08HJ1v56UJUyz/n2NHyJgTg6kC05AaJMeGIinEF0JeJtRDNVQGzoQJQYjnzUTS9FvGh\n-----END PRIVATE KEY-----",
+			        "path": "src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+			      }
+			    },
+			    "Org2": {
+			      "mspid": "Org2MSP",
+			      "peers": [
+			        "peer0.org2.example.com"
+			      ]
+			    }
+			  },
+			  "orderers": {
+			    "orderer.example.com": {
+			      "url": "grpcs://localhost:7050",
+			      "grpcOptions": {
+			        "ssl-target-name-override": "orderer.example.com",
+			        "grpc-max-send-message-length": 15
+			      },
+			      "tlsCACerts": {
+			        "pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQghnA7rdgbZi/wndusiXjyf0KgE6OKZjQ+5INjwelRAC6hRANCAASb3u+hY+U/FZvhYDN6d08HJ1v56UJUyz/n2NHyJgTg6kC05AaJMeGIinEF0JeJtRDNVQGzoQJQYjnzUTS9FvGh\n-----END PRIVATE KEY-----"
+			      }
+			    }
+			  },
+			  "peers": {
+			    "peer0.org1.example.com": {
+			      "url": "grpcs://localhost:7051",
+			      "eventUrl": "grpcs://localhost:7053",
+			      "grpcOptions": {
+			        "ssl-target-name-override": "peer0.org1.example.com",
+			        "grpc.http2.keepalive_time": 15
+			      },
+			      "tlsCACerts": {
+			      	"pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQghnA7rdgbZi/wndusiXjyf0KgE6OKZjQ+5INjwelRAC6hRANCAASb3u+hY+U/FZvhYDN6d08HJ1v56UJUyz/n2NHyJgTg6kC05AaJMeGIinEF0JeJtRDNVQGzoQJQYjnzUTS9FvGh\n-----END PRIVATE KEY-----",
+			        "path": "src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt"
+			      }
+			    },
+			    "peer0.org2.example.com": {
+			      "url": "grpcs://localhost:8051",
+			      "eventUrl": "grpcs://localhost:8053",
+			      "grpcOptions": {
+			        "ssl-target-name-override": "peer0.org2.example.com"
+			      },
+			      "tlsCACerts": {
+			      	"pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQghnA7rdgbZi/wndusiXjyf0KgE6OKZjQ+5INjwelRAC6hRANCAASb3u+hY+U/FZvhYDN6d08HJ1v56UJUyz/n2NHyJgTg6kC05AaJMeGIinEF0JeJtRDNVQGzoQJQYjnzUTS9FvGh\n-----END PRIVATE KEY-----",
+			        "path": "src/test/fixture/sdkintegration/e2e-2Orgs/v1.1/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt"
+			      }
+			    }
+			  },
+			  "certificateAuthorities": {
+			    "ca-org1": {
+			      "url": "https://localhost:7054",
+			      "httpOptions": {
+			        "verify": true
+			      },
+			      "tlsCACerts": {
+			      	"pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQghnA7rdgbZi/wndusiXjyf0KgE6OKZjQ+5INjwelRAC6hRANCAASb3u+hY+U/FZvhYDN6d08HJ1v56UJUyz/n2NHyJgTg6kC05AaJMeGIinEF0JeJtRDNVQGzoQJQYjnzUTS9FvGh\n-----END PRIVATE KEY-----",
+			        "path": "peerOrganizations/org1.example.com/ca/org1.example.com-cert.pem"
+			      },
+			      "registrar": [
+			        {
+			          "enrollId": "admin",
+			          "enrollSecret": "adminpw"
+			        }
+			      ],
+			      "caName": "ca.example.com"
+			    }
+			  }
+			}
 		}
 	</script>
 </body>

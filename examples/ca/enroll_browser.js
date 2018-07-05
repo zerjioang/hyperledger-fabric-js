@@ -1,18 +1,8 @@
 'use strict';
-/*
-* Copyright IBM Corp All Rights Reserved
-*
-* SPDX-License-Identifier: Apache-2.0
-*/
-/*
- * 这个文件的用意，就是登记 admin user。
- * Enroll the admin user
- */
 
 var Fabric_Client = require('fabric-client');
 var Fabric_CA_Client = require('fabric-ca-client');
 
-//
 var fabric_client = new Fabric_Client();
 var fabric_ca_client = null;
 var admin_user = null;
@@ -52,15 +42,6 @@ Fabric_Client.newDefaultKeyValueStore({ path: ''}).then((state_store) => {
           enrollmentSecret: 'adminpw'
         }).then((enrollment) => {
           console.log('Successfully enrolled admin user "admin"');
-          return fabric_client.createUser(
-              {
-                  username: 'admin',
-                  mspid: 'AdminMSP',
-                  cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
-              });
-        }).then((user) => {
-          admin_user = user;
-          return fabric_client.setUserContext(admin_user);
         }).catch((err) => {
           console.error('Failed to enroll and persist admin. Error: ' + err.stack ? err.stack : err);
           throw new Error('Failed to enroll admin');

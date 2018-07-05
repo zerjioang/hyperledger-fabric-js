@@ -1954,19 +1954,30 @@ function _stringToSignature(string_signatures) {
 function _getNetworkConfig(config, client) {
 	let network_config = null;
 	let network_data = null;
-	if(typeof config === 'string') {
-		const config_loc = path.resolve(config);
-		logger.debug('%s - looking at absolute path of ==>%s<==','_getNetworkConfig',config_loc);
-		const file_data = fs.readFileSync(config_loc);
-		const file_ext = path.extname(config_loc);
-		// maybe the file is yaml else has to be JSON
-		if(file_ext.indexOf('y') > -1) {
-			network_data = yaml.safeLoad(file_data);
+
+	if (global.isJsLibraryMode) {
+		if(typeof config === 'string') {
+			logger.debug('%s - parsing network config from json','_getNetworkConfig', config);
+			network_data = JSON.parse(config);
 		} else {
-			network_data = JSON.parse(file_data);
+			network_data = config
 		}
 	} else {
-		network_data = config;
+		//keep sdk method
+		if(typeof config === 'string') {
+			const config_loc = path.resolve(config);
+			logger.debug('%s - looking at absolute path of ==>%s<==','_getNetworkConfig',config_loc);
+			const file_data = fs.readFileSync(config_loc);
+			const file_ext = path.extname(config_loc);
+			// maybe the file is yaml else has to be JSON
+			if(file_ext.indexOf('y') > -1) {
+				network_data = yaml.safeLoad(file_data);
+			} else {
+				network_data = JSON.parse(file_data);
+			}
+		} else {
+			network_data = config;
+		}
 	}
 
 	let error_msg = null;
@@ -1977,7 +1988,16 @@ function _getNetworkConfig(config, client) {
 				const pieces = network_data.version.toString().split('.');
 				const version = pieces[0] + '.' + pieces[1];
 				if(parsing[version]) {
-					const NetworkConfig = require(parsing[version]);
+					var NetworkConfig;
+					if(global.isJsLibraryMode){
+						//since webpack cannot loade modules dynamically...
+						if(parsing[version] == "./impl/NetworkConfig_1_0.js") {
+							NetworkConfig = require("./impl/NetworkConfig_1_0.js");
+						}
+					} else {
+						//original sdk way
+						NetworkConfig = require(parsing[version]);
+					}
 					network_config = new NetworkConfig(network_data, client);
 				} else {
 					error_msg = 'network configuration has an unknown "version"';
